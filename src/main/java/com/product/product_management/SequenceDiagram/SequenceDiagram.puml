@@ -1,0 +1,42 @@
+@startuml
+
+
+Client --> ApiController: POST /product
+
+ApiController --> ServiceController: ApiRequest<Product>
+ServiceController --> RepositoryController: SaveAll()
+RepositoryController --> MongoDatabase : Insert into Product
+MongoDatabase --> RepositoryController: Success
+RepositoryController --> ServiceController: List of saved products
+ServiceController --> ApiController: ApiResponse<Product>
+ApiController --> Client: ApiResponse<Product>
+
+Client --> ApiController: GET /product
+ApiController --> ServiceController: GET /product
+ServiceController --> RepositoryController: getAllProduct()
+RepositoryController --> MongoDatabase: Find all in Product
+MongoDatabase --> RepositoryController: List of Products
+RepositoryController --> ServiceController: List of Products
+ServiceController --> ApiController: ApiResponse<Page<Product>>
+ApiController --> Client: ApiResponse<Page<Product>>
+
+
+Client --> ApiController: PUT /product?id={id}
+ApiController --> ServiceController: PUT /product?id={id}
+ServiceController --> RepositoryController: updateProductById(id, request)
+RepositoryController --> MongoDatabase: Update Product set... where _id = ?
+MongoDatabase --> RepositoryController: Updated Product
+RepositoryController --> ServiceController: Updated Product
+ServiceController --> ApiController: ApiResponse<Product>
+ApiController --> Client: ApiResponse<Product>
+
+Client --> ApiController: DELETE /product
+ApiController --> ServiceController: DELETE /product
+ServiceController --> RepositoryController: deleteMultipleProducts(ids)
+RepositoryController --> MongoDatabase: Delete from Product where _id = ?
+MongoDatabase --> RepositoryController: Success
+RepositoryController --> ServiceController: Success message or error
+ServiceController --> ApiController: Response message
+ApiController --> Client: Response message
+
+@enduml
